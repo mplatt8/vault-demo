@@ -30,43 +30,49 @@ function drop(event, target) {
 }
 
 function updateVaultStatus() {
-  const vault = document.getElementById("vaultImg");
-  const message = document.getElementById("message");
-
-  const userKeyPresent = vaultItems.includes("userKey");
-  const theyaKeyPresent = vaultItems.includes("theyaKey");
-  const tbaKeyPresent = vaultItems.includes("tbaKey");
-  const descriptorPresent = vaultItems.includes("descriptor");
-
-  let isUnlocked = false;
-  let scenarioMessage = "Vault is locked.";
-
-  if (vaultItems.length === 2) {
-    if (
-      vaultOrder[0] === "userKey" &&
-      (vaultOrder[1] === "theyaKey" || vaultOrder[1] === "tbaKey")
-    ) {
-      isUnlocked = true;
-      scenarioMessage = "Vault is unlocked! Correct 2-key order used.";
+    const vault = document.getElementById("vaultImg");
+    const message = document.getElementById("message");
+    const vaultStatus = document.getElementById("vaultStatus");
+  
+    const userKeyPresent = vaultItems.includes("userKey");
+    const theyaKeyPresent = vaultItems.includes("theyaKey");
+    const tbaKeyPresent = vaultItems.includes("tbaKey");
+    const descriptorPresent = vaultItems.includes("descriptor");
+  
+    let isUnlocked = false;
+    let scenarioMessage = "Vault is locked.";
+    let statusMessage = "LOCKED";
+  
+    if (vaultItems.length === 2) {
+      if (
+        vaultOrder[0] === "userKey" &&
+        (vaultOrder[1] === "theyaKey" || vaultOrder[1] === "tbaKey")
+      ) {
+        isUnlocked = true;
+        scenarioMessage = "Vault is unlocked! Correct 2-key order used.";
+        statusMessage = "UNLOCKED";
+      }
     }
-  }
-
-  if (!userKeyPresent && theyaKeyPresent && tbaKeyPresent && descriptorPresent) {
-    isUnlocked = true;
-    scenarioMessage = "Vault is unlocked by Theya + TBA + Descriptor (sovereign recovery).";
-  }
-
-  if (isUnlocked) {
-    vault.classList.remove("locked");
-    vault.classList.add("unlocked");
+  
+    if (!userKeyPresent && theyaKeyPresent && tbaKeyPresent && descriptorPresent) {
+      isUnlocked = true;
+      scenarioMessage = "Vault is unlocked by Theya + TBA + Descriptor (sovereign recovery).";
+      statusMessage = "UNLOCKED";
+    }
+  
+    if (isUnlocked) {
+      vault.classList.remove("locked");
+      vault.classList.add("unlocked");
+      vaultStatus.style.color = "green";
+    } else {
+      vault.classList.remove("unlocked");
+      vault.classList.add("locked");
+      vaultStatus.style.color = "red";
+    }
+  
     message.textContent = scenarioMessage;
-  } else {
-    vault.classList.remove("unlocked");
-    vault.classList.add("locked");
-    message.textContent =
-      scenarioMessage + " Need correct 2-key order or 3-item recovery (without user key).";
+    vaultStatus.textContent = statusMessage;
   }
-}
 
 function resetDemo() {
   vaultItems = [];

@@ -41,13 +41,17 @@
     </div>
 
     <!-- Vault Area -->
-    <div class="vault-area" id="vaultArea" ondragover="allowDrop(event)" ondrop="drop(event, 'vault')">
-      <div class="vault locked" id="vaultImg"></div>
-      <div class="bitcoin"></div>
+    <div class="vault-container">
+      <div class="vault-area" id="vaultArea" ondragover="allowDrop(event)" ondrop="drop(event, 'vault')">
+        <div class="vault locked" id="vaultImg"></div>
+        <div class="bitcoin"></div>
+      </div>
+      <div id="vaultStatus">LOCKED</div>
     </div>
-    <div id="scenarioMessageContainer">
-      <div id="message">Vault is locked.</div>
-    </div>
+  </div>
+
+  <div id="scenarioMessageContainer">
+    <div id="message">Vault is locked.</div>
   </div>
 
   <script src="script.js"></script>
