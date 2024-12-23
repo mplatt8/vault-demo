@@ -1,275 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Custom Multi-Signature Vault Demo</title>
-  <style>
-    body {
-      margin: 20px;
-      font-family: sans-serif;
-      background: #f0f2f5;
-    }
-    h1 {
-      margin-bottom: 10px;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .items, .vault-area {
-      border: 2px dashed #ccc;
-      border-radius: 8px;
-      margin: 10px;
-      padding: 10px;
-      width: 300px;
-      min-height: 300px;
-      background: #fff;
-      position: relative;
-    }
-    .items {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-around;
-    }
-
-    /* Color-coded backgrounds for clarity */
-    #userKey {
-      background-color: #ffdcdc; /* Light red/pink */
-    }
-    #theyaKey {
-      background-color: #d2f7cb; /* Light green */
-    }
-    #tbaKey {
-      background-color: #cbe3f7; /* Light blue */
-    }
-    #descriptor {
-      background-color: #fff3cd; /* Light yellow */
-    }
-
-    .draggable-item {
-      width: 120px;
-      text-align: center;
-      margin-bottom: 10px;
-      padding: 10px;
-      border: 1px solid #aaa;
-      border-radius: 6px;
-      cursor: move;
-    }
-    .vault {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 280px;
-      height: 280px;
-      background: url('https://upload.wikimedia.org/wikipedia/commons/3/31/Bank_vault.png')
-        no-repeat center center / cover;
-      opacity: 0.8;
-    }
-    .vault.locked::after {
-      content: "LOCKED";
-      color: red;
-      font-size: 24px;
-      font-weight: bold;
-      position: absolute;
-      top: 50%;
-      left: 45%;
-      transform: translate(-50%, -50%);
-    }
-    .vault.unlocked::after {
-      content: "UNLOCKED";
-      color: green;
-      font-size: 24px;
-      font-weight: bold;
-      position: absolute;
-      top: 50%;
-      left: 45%;
-      transform: translate(-50%, -50%);
-    }
-    .bitcoin {
-      width: 60px;
-      height: 60px;
-      background: url('https://upload.wikimedia.org/wikipedia/commons/9/9a/BTC_Colored.png')
-        no-repeat center center / cover;
-      position: absolute;
-      bottom: 5px;
-      right: 5px;
-    }
-    #message {
-      font-weight: bold;
-      margin-top: 10px;
-      color: #333;
-      text-align: center;
-    }
-    #restartButton {
-      background-color: #0069d9;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
-    #restartButton:hover {
-      background-color: #0053aa;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Multi-Signature Vault Demo</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <h1>Custom Multi-Signature Vault Demo</h1>
 
-<h1>Custom Multi-Signature Vault Demo</h1>
+  <!-- Restart button to reset the game -->
+  <button id="restartButton" onclick="resetDemo()">Restart</button>
 
-<!-- Restart button to reset the game -->
-<button id="restartButton" onclick="resetDemo()">Restart</button>
+  <p>
+    <strong>Two-item rule (in order):</strong><br />
+    1) The first key dropped into the vault must be the <em>User Key</em>.<br />
+    2) The second key can be the <em>Theya Key</em> or <em>TBA Key</em>.<br />
+    If you do not follow this order, the vault stays locked when you only have two items.
+  </p>
+  <p>
+    <strong>Three-item recovery (no User Key):</strong><br />
+    Any order of Theya + TBA + Descriptor unlocks the vault, simulating sovereign recovery.
+  </p>
 
-<p>
-  <strong>Two-item rule (in order):</strong><br/>
-  1) The first key dropped into the vault must be the <em>User Key</em>.<br/>
-  2) The second key can be the <em>Theya Key</em> or <em>TBA Key</em>.<br/>
-  If you do not follow this order, the vault stays locked when you only have two items.
-</p>
-<p>
-  <strong>Three-item recovery (no User Key):</strong><br/>
-  Any order of Theya + TBA + Descriptor unlocks the vault, simulating sovereign recovery.
-</p>
+  <div class="container">
+    <!-- Draggable Items Area -->
+    <div class="items" id="itemsContainer" ondragover="allowDrop(event)" ondrop="drop(event, 'items')">
+      <div class="draggable-item" draggable="true" id="userKey" ondragstart="drag(event)">
+        <strong>User Key</strong>
+      </div>
+      <div class="draggable-item" draggable="true" id="theyaKey" ondragstart="drag(event)">
+        <strong>Theya Key</strong>
+      </div>
+      <div class="draggable-item" draggable="true" id="tbaKey" ondragstart="drag(event)">
+        <strong>TBA Key</strong>
+      </div>
+      <div class="draggable-item" draggable="true" id="descriptor" ondragstart="drag(event)">
+        <strong>Descriptor</strong>
+      </div>
+    </div>
 
-<div class="container">
-  <!-- Draggable Items Area -->
-  <div class="items" id="itemsContainer" ondragover="allowDrop(event)" ondrop="drop(event, 'items')">
-    <div 
-      class="draggable-item"
-      draggable="true"
-      id="userKey"
-      ondragstart="drag(event)">
-      <strong>User Key</strong>
-    </div>
-    <div 
-      class="draggable-item"
-      draggable="true"
-      id="theyaKey"
-      ondragstart="drag(event)">
-      <strong>Theya Key</strong>
-    </div>
-    <div 
-      class="draggable-item"
-      draggable="true"
-      id="tbaKey"
-      ondragstart="drag(event)">
-      <strong>TBA Key</strong>
-    </div>
-    <div 
-      class="draggable-item"
-      draggable="true"
-      id="descriptor"
-      ondragstart="drag(event)">
-      <strong>Descriptor</strong>
-    </div>
-  </div>
+    <!-- Vault Area -->
+    <div class="vault-area" id="vaultArea" ondragover="allowDrop(event)" ondrop="drop(event, 'vault')">
+      <div class="vault locked" id="vaultImg"></div>
+      <div class="bitcoin"></div>
+    </div>
+    <div id="scenarioMessageContainer">
+      <div id="message">Vault is locked.</div>
+    </div>
+  </div>
 
-  <!-- Vault Area -->
-  <div class="vault-area" id="vaultArea" ondragover="allowDrop(event)" ondrop="drop(event, 'vault')">
-    <div class="vault locked" id="vaultImg"></div>
-    <div class="bitcoin"></div>
-    <div id="message"></div>
-  </div>
-</div>
-
-<script>
-  let vaultItems = [];   // which items are currently in the vault
-  let vaultOrder = [];   // the order in which items were placed in the vault
-
-  function drag(event) {
-    event.dataTransfer.setData("text/plain", event.target.id);
-  }
-
-  function allowDrop(event) {
-    event.preventDefault();
-  }
-
-  function drop(event, target) {
-    event.preventDefault();
-    const itemId = event.dataTransfer.getData("text/plain");
-    const draggedItem = document.getElementById(itemId);
-
-    if (target === "vault") {
-      // Move the dragged item into the vault
-      event.currentTarget.appendChild(draggedItem);
-      // Add item to the vault list if not already there
-      if (!vaultItems.includes(itemId)) {
-        vaultItems.push(itemId);
-        vaultOrder.push(itemId);
-      }
-    } else {
-      // Move the dragged item back to the items area
-      document.getElementById("itemsContainer").appendChild(draggedItem);
-      // Remove item from vault arrays
-      vaultItems = vaultItems.filter(id => id !== itemId);
-      vaultOrder = vaultOrder.filter(id => id !== itemId);
-    }
-
-    updateVaultStatus();
-  }
-
-  function updateVaultStatus() {
-    const vault = document.getElementById("vaultImg");
-    const message = document.getElementById("message");
-
-    const userKeyPresent = vaultItems.includes("userKey");
-    const theyaKeyPresent = vaultItems.includes("theyaKey");
-    const tbaKeyPresent = vaultItems.includes("tbaKey");
-    const descriptorPresent = vaultItems.includes("descriptor");
-
-    let isUnlocked = false;
-    let scenarioMessage = "Vault is locked.";
-
-    // Two-item case with order requirement:
-    // Must be [User Key] first, then [Theya Key] or [TBA Key].
-    if (vaultItems.length === 2) {
-      if (
-        vaultOrder[0] === "userKey" &&
-        (vaultOrder[1] === "theyaKey" || vaultOrder[1] === "tbaKey")
-      ) {
-        isUnlocked = true;
-        scenarioMessage = "Vault is unlocked! Correct 2-key order used.";
-      }
-    }
-
-    // Three-item recovery:
-    // If user key is missing, but Theya + TBA + Descriptor are there, it unlocks.
-    if (!userKeyPresent && theyaKeyPresent && tbaKeyPresent && descriptorPresent) {
-      isUnlocked = true;
-      scenarioMessage = "Vault is unlocked by Theya + TBA + Descriptor (sovereign recovery).";
-    }
-
-    if (isUnlocked) {
-      vault.classList.remove("locked");
-      vault.classList.add("unlocked");
-      message.textContent = scenarioMessage;
-    } else {
-      vault.classList.remove("unlocked");
-      vault.classList.add("locked");
-      message.textContent =
-        scenarioMessage + " Need correct 2-key order or 3-item recovery (without user key).";
-    }
-  }
-
-  // Restart function to reset everything
-  function resetDemo() {
-    // Clear vault arrays
-    vaultItems = [];
-    vaultOrder = [];
-
-    // Move draggable items back to the "itemsContainer"
-    const itemsContainer = document.getElementById("itemsContainer");
-    const itemIds = ["userKey", "theyaKey", "tbaKey", "descriptor"];
-    for (let itemId of itemIds) {
-      const itemElement = document.getElementById(itemId);
-      itemsContainer.appendChild(itemElement);
-    }
-
-    updateVaultStatus();
-  }
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>

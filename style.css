@@ -1,0 +1,139 @@
+body {
+    margin: 20px;
+    font-family: sans-serif;
+    background: #f0f2f5;
+  }
+  
+  h1 {
+    margin-bottom: 10px;
+  }
+  
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .items,
+  .vault-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 10px;
+    width: 300px;
+    min-height: 300px;
+    background: #fff;
+    position: relative;
+  }
+  
+  .items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  /* Vault styling */
+  .vault-area {
+    position: relative;
+  }
+  
+  #vaultImg {
+    width: 280px;
+    height: 280px;
+    background: url('assets/vault.svg') no-repeat center center / cover;
+    opacity: 0.8;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .vault.locked::after {
+    content: "LOCKED";
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .vault.unlocked::after {
+    content: "UNLOCKED";
+    color: green;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Draggable items styling */
+  .draggable-item {
+    width: 120px;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    cursor: move;
+  }
+  
+  /* Color-coded backgrounds for clarity */
+  #userKey {
+    background-color: #ffdcdc; /* Light red/pink */
+  }
+  
+  #theyaKey {
+    background-color: #d2f7cb; /* Light green */
+  }
+  
+  #tbaKey {
+    background-color: #cbe3f7; /* Light blue */
+  }
+  
+  #descriptor {
+    background-color: #fff3cd; /* Light yellow */
+  }
+  
+  /* Bitcoin icon styling */
+  .bitcoin {
+    width: 60px;
+    height: 60px;
+    background: url('assets/bitcoin.svg') no-repeat center center / cover;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+  }
+  
+  /* Scenario message styling */
+  #scenarioMessageContainer {
+    margin-top: 20px; /* Space between the vault area and the message */
+    text-align: left; /* Align the message to the left */
+  }
+  
+  #message {
+    font-weight: bold;
+    color: #333;
+    background: #fff;
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    max-width: 300px; /* Optional: Set a width limit for the message box */
+    word-wrap: break-word;
+  }
+  
+  /* Restart button styling */
+  #restartButton {
+    background-color: #0069d9;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  #restartButton:hover {
+    background-color: #0053aa;
+  }
